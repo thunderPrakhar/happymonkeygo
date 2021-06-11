@@ -1,96 +1,85 @@
 
-var monkey , monkey_running
-var banana ,bananaImage, obstacle, obstacleImage
-var FoodGroup, obstacleGroup
-var score, ground
-var survivalTime
+var fixSprite1, fixSprite2, fixSprite3, fixSprite4;
+var movingSprite;
+var music;
 
 function preload(){
-  
-  
-  monkey_running =            loadAnimation("sprite_0.png","sprite_1.png","sprite_2.png","sprite_3.png","sprite_4.png","sprite_5.png","sprite_6.png","sprite_7.png","sprite_8.png")
-  
-  bananaImage = loadImage("banana.png");
-  obstaceImage = loadImage("obstacle.png");
- 
-  FoodGroup= new Group()
-  obstacleGroup= new Group()
-  
+music=loadSound("music.mp3");
 }
 
-
-
-function setup() {
-  createCanvas(670, 400);
-  score=0
-  survivalTime=0
-  
-  ground=createSprite(0,400,1500,10)
-  
-   monkey=createSprite(90,370,10,10)
-  monkey.addAnimation("monkey_running",monkey_running)
-  monkey.scale=0.1
-  
-  
-  
-
-  }
-function draw() {
-  background("green")
-  
-  if(keyDown("space")&&monkey.y >= 350){
-    monkey.velocityY=-10
-  }
-  monkey.velocityY = monkey.velocityY + 0.3
-  monkey.collide(ground)
-  
-  
-  ground.velocityX = -7 
- ground.x = ground.width/2;
+function setup(){
     
- if(World.frameCount%200===0){
-    fruits()
- }
-  
-  if(World.frameCount%300===0){
-    stones()
- }
-  
-  if(monkey.isTouching(FoodGroup)){
-     FoodGroup.destroyEach()
-    score=score+1
-      }
-  
- 
- drawSprites()
-  fill("white") 
-  text("Score: "+ score, 500,50);
-  
-  fill("black")
-  var survivalTime=Math.round(getFrameRate()/1);
-  text("Survival Time: "+ survivalTime,350,50)
-  
+    createCanvas(800,600);
+
+    
+
+    movingSprite=createSprite(random(10,750),300,20,20);
+    movingSprite.shapeColor="white";
+    movingSprite.velocityX=3;
+    movingSprite.velocityY=3;
+
+   
+    fixSprite1=createSprite(100,580,180,30);
+    fixSprite1.shapeColor="red";
+
+    fixSprite2=createSprite(300,580,180,30);
+    fixSprite2.shapeColor="green";
+
+    fixSprite3=createSprite(500,580,180,30);
+    fixSprite3.shapeColor="blue";
+
+    fixSprite4=createSprite(700,580,180,30);
+    fixSprite4.shapeColor="yellow";
+
+    
+
 }
 
-function fruits(){
-  banana=createSprite(670,Math.round(random(170,230)),10,10)
-  banana.addImage(bananaImage)
-  banana.scale=0.1
-  banana.velocityX=-3
-  FoodGroup.add(banana)
+function draw() {
+    background(rgb(10,10,10))
+   
+    if(movingSprite.x<0){
+      music.stop()
+        movingSprite.velocityX=3
+    }else if(movingSprite.x>800){
+      music.stop()
+        movingSprite.velocityX=-3
+    }
+   
+  if(movingSprite.isTouching(fixSprite4)){
+    music.play()
+    movingSprite.shapeColor="yellow";
+    movingSprite.bounceOff(fixSprite4);
+    
+  }
+  
+  else if(movingSprite.isTouching(fixSprite3)){
+    music.stop()
+    movingSprite.shapeColor="blue";
+    bounceOff(movingSprite,fixSprite3)
+   
+  }
+    
+  else if(movingSprite.isTouching(fixSprite2)){
+    music.stop()
+    movingSprite.shapeColor="green";
+    bounceOff(movingSprite,fixSprite2)
+    movingSprite.velocityX=0;
+    movingSprite.velocityY=0;
+  }
+  
+  else if(movingSprite.isTouching(fixSprite1)){
+    music.stop()
+    movingSprite.shapeColor="red";
+    movingSprite.bounceOff(fixSprite1)
+  }
+
+  if (movingSprite.y<0){
+    music.stop()
+    movingSprite.velocityY=3
+  }
+
+  
+   
+    drawSprites()
 }
-
-function stones(){
-  obstacle=createSprite(670,380,10,10)
-  obstacle.addImage(obstaceImage)
-  obstacle.velocityX=-4
-  obstacle.scale=0.2
-  obstacleGroup.add(obstacle)
-}
-
-
-
-
-
-
-
